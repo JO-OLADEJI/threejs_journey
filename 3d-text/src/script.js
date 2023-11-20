@@ -21,8 +21,8 @@ scene.add(new THREE.AxesHelper());
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
-const matcapTexture = textureLoader.load('/textures/matcaps/1.png')
-matcapTexture.colorSpace = THREE.SRGBColorSpace
+const matcapTexture = textureLoader.load("/textures/matcaps/1.png");
+matcapTexture.colorSpace = THREE.SRGBColorSpace;
 
 /**
  * Object
@@ -64,43 +64,6 @@ fontLoader.load("fonts/courier-new.json", (font) => {
   }
 });
 
-// const manualControls = {
-//   torusRadius: 1,
-//   torusThickness: 0.4,
-// };
-// const torus = new THREE.Mesh(
-//   new THREE.TorusGeometry(
-//     manualControls.torusRadius,
-//     manualControls.torusThickness
-//   ),
-//   material
-// );
-// scene.add(torus);
-// gui
-//   .add(manualControls, "torusRadius")
-//   .min(0.1)
-//   .max(1.0)
-//   .step(0.01)
-//   .onChange(() => {
-//     torus.geometry.dispose();
-//     torus.geometry = new THREE.TorusGeometry(
-//       manualControls.torusRadius,
-//       manualControls.torusThickness
-//     );
-//   });
-// gui
-//   .add(manualControls, "torusThickness")
-//   .min(0.1)
-//   .max(1.0)
-//   .step(0.01)
-//   .onChange(() => {
-//     torus.geometry.dispose();
-//     torus.geometry = new THREE.TorusGeometry(
-//       manualControls.torusRadius,
-//       manualControls.torusThickness
-//     );
-//   });
-
 /**
  * Sizes
  */
@@ -121,6 +84,14 @@ window.addEventListener("resize", () => {
   // Update renderer
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+window.addEventListener("dblclick", async () => {
+  if (!document.fullscreenElement) {
+    await canvas.requestFullscreen();
+  } else {
+    await document.exitFullscreen();
+  }
 });
 
 /**
