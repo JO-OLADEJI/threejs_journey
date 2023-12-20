@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import GUI from "lil-gui";
+import gsap from "gsap";
 
 /**
  * Setup
@@ -60,6 +61,7 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(5, 5, 12);
 const cameraControls = new OrbitControls(camera, canvas);
 cameraControls.enableDamping = true;
+cameraControls.maxPolarAngle = Math.PI / 2 - Math.PI / 50;
 
 // scene
 const scene = new THREE.Scene();
@@ -230,6 +232,7 @@ ambientLightDebug
   });
 
 const houseDebug = gui.addFolder("House");
+houseDebug.close();
 const roofDebug = houseDebug.addFolder("Roof");
 roofDebug
   .add(config.roof, "radius")
@@ -260,7 +263,6 @@ houseDebug
   });
 
 const cameraDebug = gui.addFolder("Camera");
-cameraDebug.close();
 cameraDebug
   .add(config, "isCameraCentalized")
   .name("Centerlize Camera")
@@ -271,3 +273,79 @@ cameraDebug
       cameraControls.target = new THREE.Vector3();
     }
   });
+
+const orthographicViews = {
+  viewTop: function () {
+    const topPos = new THREE.Vector3(0, 16, 0);
+    gsap
+      .to(camera.position, {
+        duration: 1,
+        x: topPos.x,
+        y: topPos.y,
+        z: topPos.z,
+        ease: "power2.out",
+      })
+      .eventCallback("onUpdate", () => cameraControls.update())
+      .eventCallback("onComplete", () => {
+        camera.rotation.set(0, Math.PI, 0);
+        cameraControls.update();
+      });
+  },
+
+  viewFront: function () {
+    const frontPos = new THREE.Vector3(0, 1.5, 16);
+    gsap
+      .to(camera.position, {
+        duration: 1,
+        x: frontPos.x,
+        y: frontPos.y,
+        z: frontPos.z,
+        ease: "power2.out",
+      })
+      .eventCallback("onUpdate", () => cameraControls.update());
+  },
+
+  viewLeft: function () {
+    const leftPos = new THREE.Vector3(-16, 1.5, 0);
+    gsap
+      .to(camera.position, {
+        duration: 1,
+        x: leftPos.x,
+        y: leftPos.y,
+        z: leftPos.z,
+        ease: "power2.out",
+      })
+      .eventCallback("onUpdate", () => cameraControls.update());
+  },
+
+  viewRight: function () {
+    const rightPos = new THREE.Vector3(16, 1.5, 0);
+    gsap
+      .to(camera.position, {
+        duration: 1,
+        x: rightPos.x,
+        y: rightPos.y,
+        z: rightPos.z,
+        ease: "power2.out",
+      })
+      .eventCallback("onUpdate", () => cameraControls.update());
+  },
+
+  viewBack: function () {
+    const rearPos = new THREE.Vector3(0, 1.5, -16);
+    gsap
+      .to(camera.position, {
+        duration: 1,
+        x: rearPos.x,
+        y: rearPos.y,
+        z: rearPos.z,
+        ease: "power2.out",
+      })
+      .eventCallback("onUpdate", () => cameraControls.update());
+  },
+};
+cameraDebug.add(orthographicViews, "viewTop").name("Top View");
+cameraDebug.add(orthographicViews, "viewFront").name("Front View");
+cameraDebug.add(orthographicViews, "viewLeft").name("Left View");
+cameraDebug.add(orthographicViews, "viewRight").name("Right View");
+cameraDebug.add(orthographicViews, "viewBack").name("Rear View");
