@@ -35,7 +35,14 @@ const config = {
   flower: {
     color: "#89968a",
     width: 0.5,
-    scale: [1, 0.5],
+    scale: [0.7, 0.35],
+  },
+  gravestones: {
+    count: 50,
+    width: 0.5,
+    height: 0.5,
+    depth: 0.1,
+    radiiExpansion: 1.2,
   },
   lights: {
     ambient: {
@@ -135,8 +142,8 @@ flower1.scale.set(
   config.flower.scale[0]
 );
 flower1.position.y = (0.5 / 1.5) * config.flower.scale[0];
-flower1.position.z = 2;
-flower1.position.x = 1.25;
+flower1.position.z = 1.6;
+flower1.position.x = 0.9;
 const flower2 = new THREE.Mesh(flowerGeometry, flowerMaterial);
 flower2.scale.set(
   config.flower.scale[1],
@@ -144,8 +151,8 @@ flower2.scale.set(
   config.flower.scale[1]
 );
 flower2.position.y = (0.5 / 1.5) * config.flower.scale[1];
-flower2.position.z = 2.1;
-flower2.position.x = 0.8;
+flower2.position.z = 1.7;
+flower2.position.x = 0.6;
 const flower3 = new THREE.Mesh(flowerGeometry, flowerMaterial);
 flower3.scale.set(
   config.flower.scale[0],
@@ -153,8 +160,8 @@ flower3.scale.set(
   config.flower.scale[0]
 );
 flower3.position.y = (0.5 / 1.5) * config.flower.scale[0];
-flower3.position.z = 2;
-flower3.position.x = -1.25;
+flower3.position.z = 1.6;
+flower3.position.x = -0.9;
 const flower4 = new THREE.Mesh(flowerGeometry, flowerMaterial);
 flower4.scale.set(
   config.flower.scale[1],
@@ -162,8 +169,8 @@ flower4.scale.set(
   config.flower.scale[1]
 );
 flower4.position.y = (0.5 / 1.5) * config.flower.scale[1];
-flower4.position.z = 2.1;
-flower4.position.x = -0.8;
+flower4.position.z = 1.7;
+flower4.position.x = -0.6;
 flowers.add(flower1, flower2, flower3, flower4);
 
 // house bounding-rect
@@ -173,6 +180,34 @@ const houseBoundingRect = new THREE.Box3Helper(houseBox, 0xffffff);
 houseBoundingRect.visible = config.isWireFrameVisible;
 scene.add(houseBoundingRect);
 scene.add(house);
+
+// Gravestones
+const gravestones = new THREE.Group();
+const gravestoneGeometry = new THREE.BoxGeometry(
+  config.gravestones.width,
+  config.gravestones.height,
+  config.gravestones.depth
+);
+const gravestoneMaterial = new THREE.MeshStandardMaterial({
+  color: 0xc7c7c7,
+  wireframe: false,
+});
+const houseDiagonal = Math.sqrt(
+  config.walls.width ** 2 + config.walls.depth ** 2
+);
+let angle;
+let radius;
+for (let i = 0; i < config.gravestones.count; i++) {
+  angle = Math.random() * Math.PI * 2;
+  radius =
+    houseDiagonal / 1.7 + Math.random() * config.gravestones.radiiExpansion;
+  const gravestone = new THREE.Mesh(gravestoneGeometry, gravestoneMaterial);
+  const x = Math.cos(angle) * radius;
+  const z = Math.sin(angle) * radius;
+  gravestone.position.set(x, config.gravestones.height / 2, z);
+  gravestones.add(gravestone);
+}
+scene.add(gravestones);
 
 /**
  * Lights
